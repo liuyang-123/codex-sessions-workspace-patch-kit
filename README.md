@@ -36,10 +36,26 @@ unchanged.
 
 ## Commands
 
+Prerequisite: install Node.js. The kit currently has no npm dependencies, so
+`npm install` is not required.
+
+If you downloaded the GitHub release ZIP or source ZIP:
+
+1. Extract the ZIP.
+2. Open PowerShell in the extracted folder.
+3. Run the dry-run flow before applying:
+
 ```powershell
 npm run scan
 npm run apply:dry
 npm run apply
+```
+
+4. Reload VS Code with `Developer: Reload Window`.
+
+To undo the patch:
+
+```powershell
 npm run restore
 ```
 
