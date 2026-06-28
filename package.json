@@ -1,6 +1,6 @@
 {
   "name": "codex-sessions-workspace-patch-kit",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "private": true,
   "description": "Companion patch kit for workspace-safe Codex sessions in the shipped VS Code extension bundle.",
   "scripts": {
