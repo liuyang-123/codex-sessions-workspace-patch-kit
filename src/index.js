@@ -3,7 +3,7 @@
 const fs = require("fs");
 const path = require("path");
 
-const PATCH_ID = "codex-sessions-workspace-patch-v5";
+const PATCH_ID = "codex-sessions-workspace-patch-v6";
 const BACKUP_ROOT_NAME = ".codex-sessions-patch-backups";
 const OPENAI_EXTENSION_PREFIX = "openai.chatgpt-";
 
@@ -14,9 +14,9 @@ const PATCHES = [
     description:
       "Add extension-host helpers that filter thread/list results by the current VS Code workspace roots.",
     find:
-      "var $de=require(\"path\");U();Mt();var cy=B(require(\"vscode\"));U();Mt();ec();",
+      "var qfe=U(require(\"path\")),aB=U(require(\"vscode\"));Rt();var nv=U(require(\"vscode\"));qr();",
     replace:
-      "var $de=require(\"path\");U();Mt();var cy=B(require(\"vscode\"));function codexSessionsPatchNormalizePath(e){if(typeof e!=\"string\"||e.length===0||e===\"~\")return null;let r=e.replace(/\\\\/g,\"/\").replace(/\\/+$/,\"\");return/^[a-zA-Z]:\\//.test(r)||r.startsWith(\"//\")?r.toLowerCase():r}function codexSessionsPatchCwdBelongsToWorkspace(e,r){let n=codexSessionsPatchNormalizePath(e);if(n==null)return!1;return r.some(e=>{let r=codexSessionsPatchNormalizePath(e);return r!=null&&(n===r||n.startsWith(`${r}/`))})}function codexSessionsPatchThreadHasWorkspacePath(e){return typeof e?.cwd===\"string\"&&e.cwd.length>0||Array.isArray(e?.cwds)&&e.cwds.some(e=>typeof e===\"string\"&&e.length>0)}function codexSessionsPatchThreadBelongsToWorkspace(e,r){return codexSessionsPatchCwdBelongsToWorkspace(e?.cwd,r)||Array.isArray(e?.cwds)&&e.cwds.some(e=>codexSessionsPatchCwdBelongsToWorkspace(e,r))}function codexSessionsPatchFilterThreadListResponse(e){try{let r=cy.workspace.workspaceFolders?.map(e=>e.uri.fsPath)??[];if(r.length===0||e==null||e.error||e.result==null||!Array.isArray(e.result.data)||!e.result.data.some(codexSessionsPatchThreadHasWorkspacePath))return e;let n=e.result.data.filter(e=>codexSessionsPatchThreadBelongsToWorkspace(e,r));return{...e,result:{...e.result,data:n}}}catch{return e}}U();Mt();ec();",
+      "var qfe=U(require(\"path\")),aB=U(require(\"vscode\"));function codexSessionsPatchNormalizePath(e){if(typeof e!=\"string\"||e.length===0||e===\"~\")return null;let r=e.replace(/\\\\/g,\"/\").replace(/\\/+$/,\"\");return/^[a-zA-Z]:\\//.test(r)||r.startsWith(\"//\")?r.toLowerCase():r}function codexSessionsPatchCwdBelongsToWorkspace(e,r){let n=codexSessionsPatchNormalizePath(e);if(n==null)return!1;return r.some(e=>{let r=codexSessionsPatchNormalizePath(e);return r!=null&&(n===r||n.startsWith(`${r}/`))})}function codexSessionsPatchThreadHasWorkspacePath(e){return typeof e?.cwd===\"string\"&&e.cwd.length>0||Array.isArray(e?.cwds)&&e.cwds.some(e=>typeof e===\"string\"&&e.length>0)}function codexSessionsPatchThreadBelongsToWorkspace(e,r){return codexSessionsPatchCwdBelongsToWorkspace(e?.cwd,r)||Array.isArray(e?.cwds)&&e.cwds.some(e=>codexSessionsPatchCwdBelongsToWorkspace(e,r))}function codexSessionsPatchFilterThreadListResponse(e){try{let r=aB.workspace.workspaceFolders?.map(e=>e.uri.fsPath)??[];if(r.length===0||e==null||e.error||e.result==null||!Array.isArray(e.result.data)||!e.result.data.some(codexSessionsPatchThreadHasWorkspacePath))return e;let n=e.result.data.filter(e=>codexSessionsPatchThreadBelongsToWorkspace(e,r));return{...e,result:{...e.result,data:n}}}catch{return e}}Rt();var nv=U(require(\"vscode\"));qr();",
   },
   {
     id: "extension-host-track-thread-list-requests",
@@ -24,9 +24,9 @@ const PATCHES = [
     description:
       "Track thread/list request IDs so only those responses are workspace-filtered.",
     find:
-      "pendingNotifications=[];internalNotificationHandlers=new Set;ephemeralThreadTimeouts=new Map;pendingPrewarmedThreadStartRequestIds=new Set;prewarmedThreads=new jh",
+      "pendingNotifications=[];internalNotificationHandlers=new Set;ephemeralThreadTimeouts=new Map;pendingPrewarmedThreadStartRequestIds=new Set;prewarmedThreads=new Wg",
     replace:
-      "pendingNotifications=[];internalNotificationHandlers=new Set;ephemeralThreadTimeouts=new Map;pendingPrewarmedThreadStartRequestIds=new Set;threadListRequestIds=new Set;prewarmedThreads=new jh",
+      "pendingNotifications=[];internalNotificationHandlers=new Set;ephemeralThreadTimeouts=new Map;pendingPrewarmedThreadStartRequestIds=new Set;threadListRequestIds=new Set;prewarmedThreads=new Wg",
   },
   {
     id: "extension-host-record-thread-list-requests",
@@ -34,9 +34,9 @@ const PATCHES = [
     description:
       "Record outgoing thread/list request IDs and widen thread/list pages before sending them to the app server.",
     find:
-      "sendProviderRequest(e,r,n,o,i){let s=`${e}:${r}`;i&&this.pendingPrewarmedThreadStartRequestIds.add(s);let a={id:s,method:n,params:o};if(this.recordLastOutboundMethod(n),this.sendMessage(a)&&n===\"turn/start\"){let c=__(o);c!=null&&this.prewarmedThreads.publishThreadStarted(c)}}",
+      "sendProviderRequest(e,r,n,o,i){let s=`${e}:${r}`;i&&this.pendingPrewarmedThreadStartRequestIds.add(s);let a={id:s,method:n,params:o};if(this.recordLastOutboundMethod(n),this.sendMessage(a)&&n===\"turn/start\"){let c=vR(o);c!=null&&this.prewarmedThreads.publishThreadStarted(c)}}",
     replace:
-      "sendProviderRequest(e,r,n,o,i){let s=`${e}:${r}`;i&&this.pendingPrewarmedThreadStartRequestIds.add(s),(e===\"codex.chatSessionProvider\"||e===\"CodexWebviewProvider.webview\")&&n===\"thread/list\"&&(this.threadListRequestIds.add(s),o={...o,limit:Math.max(Number(o?.limit)||0,500)});let a={id:s,method:n,params:o};if(this.recordLastOutboundMethod(n),this.sendMessage(a)&&n===\"turn/start\"){let c=__(o);c!=null&&this.prewarmedThreads.publishThreadStarted(c)}}",
+      "sendProviderRequest(e,r,n,o,i){let s=`${e}:${r}`;i&&this.pendingPrewarmedThreadStartRequestIds.add(s),(e===\"codex.chatSessionProvider\"||e===\"CodexWebviewProvider.webview\")&&n===\"thread/list\"&&(this.threadListRequestIds.add(s),o={...o,limit:Math.max(Number(o?.limit)||0,500)});let a={id:s,method:n,params:o};if(this.recordLastOutboundMethod(n),this.sendMessage(a)&&n===\"turn/start\"){let c=vR(o);c!=null&&this.prewarmedThreads.publishThreadStarted(c)}}",
   },
   {
     id: "extension-host-filter-thread-list-responses",
@@ -44,9 +44,9 @@ const PATCHES = [
     description:
       "Filter tracked thread/list responses by workspace before routing them to webviews or chat-session providers.",
     find:
-      "let s=this.providers.get(n);if(s?.onResult){let a={...e,id:i};s.onResult(a)}return{routeKind:\"response\",method:null}}",
+      "let a=this.providers.get(o);if(a?.onResult){let c={...e,id:s};a.onResult(c)}return{routeKind:\"response\",method:null}}",
     replace:
-      "let s=this.providers.get(n),a=this.threadListRequestIds.delete(r)?codexSessionsPatchFilterThreadListResponse(e):e;if(s?.onResult){let e={...a,id:i};s.onResult(e)}return{routeKind:\"response\",method:null}}",
+      "let a=this.providers.get(o),c=this.threadListRequestIds.delete(n)?codexSessionsPatchFilterThreadListResponse(e):e;if(a?.onResult){let e={...c,id:s};a.onResult(e)}return{routeKind:\"response\",method:null}}",
   },
 ];
 
@@ -239,8 +239,8 @@ function applyPatches(options) {
     message:
       changedFiles.length > 0
         ? options.dryRun
-          ? "Dry run completed. The v5 patch can be applied cleanly."
-          : "V4 patch applied."
+          ? "Dry run completed. The patch can be applied cleanly."
+          : "Patch applied."
         : "Target files were already patched.",
     };
 }
